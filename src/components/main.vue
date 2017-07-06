@@ -1,4 +1,21 @@
-body {
+<template>
+  <div class="wrapper">
+  <text-grid :columns="gridColumns" :maxval="maxLengthCalculated"> 
+  </text-grid> 
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'main',
+  data () {
+    return {}
+  }
+}
+</script>
+
+<style lang="less">
+  body {
   background: #F7F7F7;
   font-family: Arial, 'sans-serif';
 }
@@ -65,3 +82,5 @@ body {
     border-right: 7px solid #FFE1ED;
   }
 }
+
+</style>

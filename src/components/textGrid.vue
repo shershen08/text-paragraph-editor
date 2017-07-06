@@ -1,9 +1,13 @@
 <script>
 import Vue from 'vue';
+import rowItem from './components/rowItem';
 
 export default {
     name: "text-grid",
     template: "#grid-template",
+     components: {
+        rowItem
+    },
     props: {
         columns: Array,
         maxval: Number

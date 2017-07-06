@@ -1,9 +1,13 @@
 <script>
 import Vue from 'vue';
+import pItem from './components/pItem';
 
 export default {
     name: "row-item",
     template: "#row-template",
+      components: {
+        Main
+    },
     props: {
         ii: Number,
         columns: Array
