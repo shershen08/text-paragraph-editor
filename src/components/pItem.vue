@@ -1,6 +1,9 @@
 <script>
 import Vue from 'vue';
 
+Vue.config.keyCodes.baskp = 8;
+let bus = new Vue();
+
 export default {
   template: "#item-template",
   name: "p-item",

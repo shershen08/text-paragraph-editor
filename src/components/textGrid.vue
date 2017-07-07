@@ -1,11 +1,14 @@
 <script>
 import Vue from 'vue';
-import rowItem from './components/rowItem';
+import rowItem from './rowItem';
+import {downloadFileHTML, getMaxLength} from '../utils';
+
+let bus = new Vue();
 
 export default {
     name: "text-grid",
     template: "#grid-template",
-     components: {
+    components: {
         rowItem
     },
     props: {
@@ -79,13 +82,14 @@ export default {
         <tr>
           <th v-for="key in columns" v-bind:style="{width:columnWidth}">
             <span class="arrow" @click="downloadFile(key)">
+            <img src="../assets/download.png"/>
           {{fileName(key)}}
           </span>
           </th>
         </tr>
       </thead>
       <tbody>
-        <row-item v-for="i in maxvalReal" :ii="i"  :columns="getColumnsForRow(i)"/>
+        <row-item v-for="i in maxvalReal" :ii="i" :key="i" :columns="getColumnsForRow(i)"/>
       </tbody>
     </table>
   </div>
