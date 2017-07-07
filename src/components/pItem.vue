@@ -12,10 +12,10 @@ export default {
     hindex: Number,
     vindex: Number
   },
-  data: function() {
+  data: function () {
     return {
       editmode: false,
-      isEmpty: false
+      isEmpty: true
     };
   },
   computed: {},
@@ -28,47 +28,77 @@ export default {
 
     bus.$on("id-setfocus", evt => {
       if (evt.vIndex == this.vindex && evt.hIndex == this.hindex) {
-        this.setEditmode(evt.textLength);
+        this.setEditmode(undefined, evt.textLength);
       }
     });
 
     this.$watch("text", val => {
       this.isEmptyText();
     });
-    
+
     this.$watch("editmode", (val, oldval) => {
-      if(val === false)
+      if (val === false)
         this.$emit("updaterowvalue", {
-        hindex: this.hindex,
-        vindex: this.vindex,
-        text: this.text
-      });
+          hindex: this.hindex,
+          vindex: this.vindex,
+          text: this.text
+        });
     });
   },
   methods: {
-    isEmptyText: function() {
-      this.isEmpty = this.text == " " || this.text == "";
+    isEmptyText: function () {
+      //console.log(this.text.charCodeAt(0));
+      this.isEmpty = this.text == " " || this.text == "" || this.text.charCodeAt(0) == 13;
     },
-    checkValue: function() {},
-    setEditmode: function(position) {
+    setEditmode: function (e, position) {
+
+console.log(e, position)
+
+      const pHeight = this.$refs.textareaItem.children[0].clientHeight;
+      const ta = this.$refs.textareaItem.children[1];
+
+
+      //if(!e){
       this.editmode = true;
       this.$emit("setactive", {
         myId: `v${this.hindex}h${this.vindex}`
       });
 
-      const pHeight = this.$refs.textareaItem.children[0].clientHeight;
       //try Vue.nextTick ?
       setTimeout(() => {
-        const ta = this.$refs.textareaItem.children[1];
         ta.focus();
         if (position) {
           ta.selectionEnd = ta.value.length - position;
         }
         ta.style.height = parseInt(pHeight) + "px";
-                ta.scrollTop = 0;
+        ta.scrollTop = 0;
       }, 50);
+
+     // }
+      if (e) {
+        if(ta.value.length > 1){
+          var s = window.getSelection();
+          var range = s.getRangeAt(0);
+          var node = s.anchorNode;
+          while (range.toString().indexOf(' ') != 0) {
+            range.setStart(node, (range.startOffset - 1));
+          }
+          range.setStart(node, range.startOffset + 1);
+          do {
+            range.setEnd(node, range.endOffset - 1);
+
+          } while (range.toString().indexOf(' ') == -1 && range.toString().trim() != '');
+          var str = range.toString().trim();
+          //console.log(range)
+          ta.selectionEnd = range.startOffset;
+        } else {
+           ta.selectionEnd = 0;
+        }
+      }
+
+
     },
-    submitText: function() {
+    submitText: function () {
       this.editmode = false;
       this.$emit("setseparated", {
         text: this.text,
@@ -77,11 +107,11 @@ export default {
       });
       this.isEmptyText();
     },
-    escPress: function() {
+    escPress: function () {
       this.isEmptyText();
       this.editmode = false;
     },
-    deleteSymbol: function() {
+    deleteSymbol: function () {
       if (this.$refs.textareaItem.children[1].selectionStart === 0) {
         this.$emit("addtoupper", {
           text: this.text,
@@ -95,8 +125,8 @@ export default {
 
 </script>
 <template>
-      <div ref="textareaItem">
-    <p v-show="!editmode" @click="setEditmode()" v-bind:class="{ 'no-text': isEmpty }">{{text}}</p>
-    <textarea v-show="editmode" v-model="text" v-on:keyup.enter="submitText" v-on:keyup.8="deleteSymbol" v-on:keyup.esc="escPress"></textarea>
+    <div ref="textareaItem">
+      <p v-show="!editmode" @click="setEditmode" v-bind:class="{ 'no-text': isEmpty }">{{text}}</p>
+      <textarea v-show="editmode" v-model="text" v-on:keyup.enter="submitText" v-on:keyup.8="deleteSymbol" v-on:keyup.esc="escPress"></textarea>
   </div>
 </template>

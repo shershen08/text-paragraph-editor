@@ -110,6 +110,7 @@ export default {
     outline: none;
   }
   p, textarea {
+    word-wrap: break-word;
     min-height: 20px;
     font-family: Arial, 'sans-serif' !important;
     font-size: 14px !important;
